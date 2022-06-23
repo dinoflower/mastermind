@@ -4,17 +4,44 @@ class Game
   def initialize(codemaker, codebreaker)
     @codemaker = codemaker.new(self)
     @codebreaker = codebreaker.new(self)
-    @turn = 1
+    @turn = 0
+    @output = '□□□□'
   end
 
   def play_game
-    while @turn < 12 # and code not solved
-      if @turn == 1
-        @codemaker # make code
+    puts 'The colors are W, U, B, R, G, and C.'
+    while @turn < 13 && !@codebreaker.has_won?
+      if @turn == 0
+        @codemaker.set_code
       else
-        @codebreaker # guess code
+        @codebreaker.guess_code
+        check_code
       end
+      puts @output
+      @turn += 1
+      puts 'The code was unbreakable.' if @turn == 13
     end
+  end
+
+  def check_code
+    if @codebreaker.has_won?
+      puts 'The code has been broken!'
+      @output = '■■■■'
+    else
+      set_output
+    end
+  end
+
+  def set_output
+    indices = {}
+    @codebreaker.current_guess each_with_index |color, index| do
+      if @codemaker.code.include?(color)
+        indicies << index[color]
+      end
+      # iterate i = 0 i < 4 etc ...?
+      # @codemaker.code[index] == @codebreaker.current_guess[index]
+    end
+  end
 end
 
 # 12 turns or you lose - loop

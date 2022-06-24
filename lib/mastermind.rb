@@ -1,3 +1,4 @@
+# class to generate one two-player game of mastermind
 class Game
   CODE_PIECES = ['w', 'U', 'B', 'R', 'G', 'C']
 
@@ -10,7 +11,7 @@ class Game
 
   def play_game
     puts 'The colors are W, U, B, R, G, and C.'
-    while @turn < 13 && !@codebreaker.has_won?
+    loop do
       if @turn == 0
         @codemaker.set_code
       else
@@ -19,12 +20,13 @@ class Game
       end
       puts @output
       @turn += 1
-      puts 'The code was unbreakable.' if @turn == 13
+      break unless @turn < 12 && !@codebreaker.won?
     end
+    unless @codebreaker.won? puts 'The code was unbreakable.'
   end
 
   def check_code
-    if @codebreaker.has_won?
+    if @codebreaker.won?
       puts 'The code has been broken!'
       @output = '■■■■'
     else
@@ -34,7 +36,7 @@ class Game
 
   def set_output
     indices = {}
-    @codebreaker.current_guess each_with_index |color, index| do
+    @codebreaker.current_guess each_with_index do |color, index|
       if @codemaker.code.include?(color)
         indicies << index[color]
       end
@@ -61,7 +63,7 @@ end
 # if all matches, Codebreaker wins
 # elsif that was Guess 12, Codemaker wins
 # otherwise, the game continues
-puts "■ ▤ □ ▤"
+# puts "■ ▤ □ ▤"
 
 # Codemaker can "see" the CODE_PIECES and guesses
 # can also "see" and make (edit from ""?) the code

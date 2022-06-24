@@ -1,3 +1,6 @@
+# frozen_string_literal: true
+
+# instantiates a mastermind player
 class Player
   attr_reader :game
   attr_accessor :current_guess
@@ -8,23 +11,23 @@ class Player
   end
 end
 
+# designates the codemaker
 class Codemaker < Player
   private
+
   def set_code
     @code = 4.times game.CODE_PIECES.sample.chars
   end
-  def code
-    @code
-  end
 end
 
+# designates the codebreaker
 class Codebreaker < Player
   def guess_code
     @current_guess = gets.chomp.chars
   end
 
-  def has_won?
-    @current_guess.eql?(code)
+  def won?
+    @current_guess.eql?(@code)
   end
 end
 

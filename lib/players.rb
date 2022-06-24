@@ -2,11 +2,12 @@
 
 # instantiates a mastermind player
 class Player
-  attr_reader :game
+  attr_reader :game, :code
   attr_accessor :current_guess
 
   def initialize(game)
     @game = game
+    @code = []
     @current_guess = ''
   end
 end

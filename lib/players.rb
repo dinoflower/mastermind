@@ -14,10 +14,14 @@ end
 
 # designates the codemaker
 class Codemaker < Player
+  def return_code
+    set_code
+  end
+
   private
 
   def set_code
-    @code = 4.times game.CODE_PIECES.sample.chars
+    4.times { @code << Game::CODE_PIECES.sample }
   end
 end
 
@@ -25,10 +29,6 @@ end
 class Codebreaker < Player
   def guess_code
     @current_guess = gets.chomp.chars
-  end
-
-  def won?
-    @current_guess.eql?(@code)
   end
 end
 

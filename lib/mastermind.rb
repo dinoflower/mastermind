@@ -52,8 +52,8 @@ class Game
 
   def set_output
     @output.clear
-    (0..3).each do |i|
-      if @codemaker.code[i] == @indicies[i]
+    @codemaker.code.each_index do |i|
+      if @codemaker.code[i] == @codebreaker.current_guess[i]
         record_exact
         @indicies.delete(i)
       else
@@ -69,13 +69,12 @@ class Game
   def find_match(num)
     return unless @indicies.include?(num)
 
-    occurances = @codemaker.code.count(@indicies[num])
-    if occurances >= @codebreaker.current_guess.count(@indicies[num])
-      @output << '▤' unless 
+    @output << '▤'
   end
 end
 
-# find_matches is still incomplete
+# still returns too many matches
+# test for exact matches first and remove them? then approximate?
 
 # subclasses or modules for Computer and Human
 # subclasses or modules for Codemaker and Codebreaker

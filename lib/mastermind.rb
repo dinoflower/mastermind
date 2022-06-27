@@ -1,6 +1,8 @@
+# frozen_string_literal: true
+
 # class to generate one two-player game of mastermind
 class Game
-  CODE_PIECES = ['w', 'U', 'B', 'R', 'G', 'C']
+  CODE_PIECES = %w[W U B R G C].freeze
 
   def initialize(codemaker, codebreaker)
     @codemaker = codemaker.new(self)
@@ -11,18 +13,15 @@ class Game
 
   def play_game
     puts 'The colors are W, U, B, R, G, and C.'
+    @codemaker.set_code
     loop do
-      if @turn == 0
-        @codemaker.set_code
-      else
-        @codebreaker.guess_code
-        check_code
-      end
+      @codebreaker.guess_code
+      check_code
       puts @output
       @turn += 1
-      break unless @turn < 12 && !@codebreaker.won?
+      break if @turn > 12 || @codebreaker.won?
     end
-    unless @codebreaker.won? puts 'The code was unbreakable.'
+    puts 'The code was unbreakable.' unless @codebreaker.won?
   end
 
   def check_code
@@ -35,16 +34,14 @@ class Game
   end
 
   def set_output
-    i = 0
-    loop do
-      if @codemaker.code[i] == @codebreaker.current_guess[i]
-        @output[i] = '■'
-      elsif @codemaker.code.include?(@codebreaker.current_guess[i])
-        @output[i] = '▤'
-      else
-        @output[i] = '□'
-      end
-      i += 1
+    (0..3).each do |i|
+      @output[i] = if @codemaker.code[i] == (@codebreaker.current_guess[i])
+                     '■'
+                   elsif @codemaker.code.include?(@codebreaker.current_guess[i])
+                     '▤'
+                   else
+                     '□'
+                   end
     end
   end
 end

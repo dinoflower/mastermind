@@ -40,36 +40,46 @@ class Game
 
   def collect_values
     @codebreaker.current_guess.each_with_index do |color, index|
-      @indicies[index] = color if @codemaker.code.include?(color)
+      if @codemaker.code[index] == @codebreaker.current_guess[index]
+        @indicies[:exact] = { index => color }
+      elsif @codemaker.code.include?(color)
+        @indicies[:close] = { index => color }
+      else
+        @indicies[:none] = { index => color }
+      end
     end
+    print @indicies
     set_output
-    loop do
-      break if @output.length == 4
-
-      @output << '□'
-    end
+   # loop do
+     # break if @output.length == 4
+#
+     # @output << '□'
+   # end
   end
 
   def set_output
     @output.clear
-    @codemaker.code.each_index do |i|
-      if @codemaker.code[i] == @codebreaker.current_guess[i]
-        record_exact
-        @indicies.delete(i)
-      else
-        find_match(i)
-      end
-    end
+    @codemaker.code.each_index { |i| find_exact(i) }
+    @codemaker.code.each_index { |i| find_match(i) }
+    @codemaker.code.each_index { |i| no_match(i) }
   end
 
-  def record_exact
+  def find_exact(num)
+    return unless @indicies.dig(:exact, num)
+
     @output << '■'
   end
 
   def find_match(num)
-    return unless @indicies.include?(num)
+    return unless @indicies.dig(:close, num)
 
     @output << '▤'
+  end
+
+  def no_match(num)
+    return unless @indicies.dig(:none, num)
+
+    @output << '□'
   end
 end
 

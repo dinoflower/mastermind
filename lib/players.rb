@@ -12,8 +12,24 @@ class Player
   end
 end
 
-# designates the codemaker
-class Codemaker < Player
+# designates the human player
+class HumanPlayer < Player
+  def initialize(game, player_type)
+    super(game)
+    @player_type = player_type
+  end
+end
+
+# designates the computer player
+class ComputerPlayer
+  def initialize(game, player_type)
+    super(game)
+    @player_type = player_type
+  end
+end
+
+# mix in if player is codebreaker
+module ComputerCodemaker
   def return_code
     set_code
   end
@@ -25,20 +41,20 @@ class Codemaker < Player
   end
 end
 
-# designates the codebreaker
-class Codebreaker < Player
+# mix in if player is codebreaker
+module HumanCodebreaker
   def guess_code
     @current_guess = gets.chomp.upcase!.chars
   end
 end
 
-# module Codeable # include these for human players?
-#   def set_code
-#     @code = gets.chomp.chars (check length and use regexp)
-#   end
-# end
+# designates the codemaker, if the player is codemaker
+class Codemaker < HumanPlayer
+end
 
-# module Playable
-#   def guess_code
-#   end
-# end
+# designates the codebreaker, if the player is codemaker
+class Codebreaker < ComputerPlayer
+end
+
+# a conditional way to add modules to the classes?
+# or just load up the game with the subclass based on what the human player chooses?

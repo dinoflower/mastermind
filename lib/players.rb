@@ -49,11 +49,25 @@ module HumanCodebreaker
 end
 
 # designates the codemaker, if the player is codemaker
-class Codemaker < HumanPlayer
+module HumanCodemaker
+  def set_code
+    @code = gets.chomp.match./[bcgrw]/i
+    return unless @code < 4
+
+    prompt_user
+  end
+
+  def prompt_user
+    puts 'Your code must be 4 characters long and can only include W, U, B, R, G, and C.'
+    until @code.length == 4
+      entries = gets.chomp.match./[bcgrw]/i
+      entries.each { |entry| @code.length < 4 @code << entry } # you know what I mean
+    end
+  end
 end
 
 # designates the codebreaker, if the player is codemaker
-class Codebreaker < ComputerPlayer
+module ComputerCodebreaker
 end
 
 # a conditional way to add modules to the classes?

@@ -15,10 +15,10 @@ class Game
     start_game
     @codemaker.return_code
     loop do
+      puts "Turn #{@turn}"
       @codebreaker.guess_code
       check_guess
       @turn += 1
-      puts @output.join, "Turn #{@turn}"
       break if @winner == @codebreaker || @turn > 12
     end
     puts 'The code was unbreakable.', @codemaker.code.join unless @winner == @codebreaker
@@ -27,7 +27,7 @@ class Game
   def start_game
     puts 'The colors are W, U, B, R, G, and C.'
     puts '■ indicates a correct guess. ▤ indicates a color in the wrong place.'
-    puts 'Turn 1', 'Make your guess: □□□□'
+    puts 'Make your guess: □□□□'
   end
 
   def check_guess
@@ -41,25 +41,25 @@ class Game
 
   def collect_values
     @codebreaker.current_guess.each_with_index do |color, index|
-      if @codemaker.code[index] == @codebreaker.current_guess[index]
-        @indicies[:exact][index] = color
-      elsif @codemaker.code.include?(color)
-        determine_hints(color, index)
-      else
-        @indicies[:none][index] = color
-      end
+      next unless @codemaker.code[index] == @codebreaker.current_guess[index]
+
+      @indicies[:exact][index] = color
     end
-    print @indicies
+    @codebreaker.current_guess.each_with_index do |color, index|
+      next unless @codemaker.code.include?(color)
+
+      determine_hints(color, index)
+    end
     set_output
   end
 
   def determine_hints(color, num)
+    return if @indicies[:exact][num] == color
+
     if color_count(color) >= @codebreaker.current_guess.count(color)
       @indicies[:close][num] = color
     elsif color_count(color) > @indicies[:close].values.count(color)
       @indicies[:close][num] = color
-    else
-      @indicies[:none][num] = color
     end
   end
 
@@ -78,7 +78,8 @@ class Game
       find_match(i)
     end
     @output.sort!
-    @codemaker.code.each_index { |i| no_match(i) }
+    4.times { @output << '□' if @output.length < 4 }
+    puts @output.join
   end
 
   def find_exact(num)
@@ -87,30 +88,12 @@ class Game
     @output << '■'
   end
 
-  # find colors that are present but in the wrong position
-  # no duplicates
-  # almost like... if a color is present one time in current_guess and one time
-  # in the code, but it's in the wrong position, only then should it register
-  # @codemaker.code.count(color) - @indicies.dig(:exact).values.count >= @codebreaker.current_guess.count(color)
-  # ugh that shortcut really set me back here
-
   def find_match(num)
     return unless @indicies.dig(:close, num)
 
-    return if @codemaker.code[num] == @indicies.dig(:close, num)
-
     @output << '▤'
   end
-
-  def no_match(num)
-    return unless @indicies.dig(:none, num)
-
-    @output << '□'
-  end
 end
-
-# still returns too many matches
-# test for exact matches first and remove them? then approximate?
 
 # subclasses or modules for Computer and Human
 # subclasses or modules for Codemaker and Codebreaker

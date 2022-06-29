@@ -28,7 +28,7 @@ end
 # designates the codebreaker
 class Codebreaker < Player
   def guess_code
-    @current_guess = gets.chomp.chars
+    @current_guess = gets.chomp.upcase!.chars
   end
 end
 

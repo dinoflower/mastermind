@@ -2,7 +2,7 @@
 
 # instantiates a mastermind player
 class Player
-  attr_reader :game, :code
+  attr_reader :game, :code, :player_type
   attr_accessor :current_guess
 
   def initialize(game)
@@ -18,26 +18,33 @@ class HumanPlayer < Player
     super(game)
     @player_type = player_type
   end
+
+  def self.player_type(answer)
+    case answer
+    when 'break'
+      'codebreaker'
+    when 'make'
+      'codemaker'
+    else
+      puts "I didn't catch that."
+    end
+    HumanPlayer.new(game, answer)
+  end
 end
 
 # designates the computer player
-class ComputerPlayer
-  def initialize(game, player_type)
+class ComputerPlayer < Player
+  def initialize(game)
     super(game)
     @player_type = player_type
   end
-end
 
-# mix in if player is codebreaker
-module ComputerCodemaker
-  def return_code
-    set_code
-  end
-
-  private
-
-  def set_code
-    4.times { @code << Game::CODE_PIECES.sample }
+  def self.player_type
+    if HumanPlayer.player_type == 'codebreaker'
+      'codemaker'
+    else
+      'codebreaker'
+    end
   end
 end
 
@@ -61,13 +68,28 @@ module HumanCodemaker
     puts 'Your code must be 4 characters long and can only include W, U, B, R, G, and C.'
     until @code.length == 4
       entries = gets.chomp.match./[bcgrw]/i
-      entries.each { |entry| @code.length < 4 @code << entry } # you know what I mean
+      entries.each { |entry| @code << entry if @code.length < 4 } # you know what I mean
     end
   end
 end
 
 # designates the codebreaker, if the player is codemaker
 module ComputerCodebreaker
+  def guess_code
+  end
+end
+
+# mix in if player is codebreaker
+module ComputerCodemaker
+  def return_code
+    set_code
+  end
+
+  private
+
+  def set_code
+    4.times { @code << Game::CODE_PIECES.sample }
+  end
 end
 
 # a conditional way to add modules to the classes?

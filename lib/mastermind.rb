@@ -2,9 +2,10 @@
 class Game
   CODE_PIECES = %w[W U B R G C].freeze
 
-  def initialize(codemaker, codebreaker)
-    @codemaker = codemaker.new(self)
-    @codebreaker = codebreaker.new(self)
+  def initialize(human, computer)
+    puts 'Do you want to break or make the code?'
+    @human = human.new(self, gets.chomp.downcase)
+    @computer = computer.new(self)
     @turn = 1
     @output = %w[□ □ □ □]
     @winner = ''

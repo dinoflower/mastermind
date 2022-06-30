@@ -6,6 +6,8 @@ class Game
     puts 'Do you want to break or make the code?'
     @human = human.new(self, gets.chomp.downcase)
     @computer = computer.new(self)
+    @codemaker = @human.player_type == 'codemaker' ? @human : @computer
+    @codebreaker = @human.player_type == 'codebreaker' ? @human : @computer
     @turn = 1
     @output = %w[□ □ □ □]
     @winner = ''

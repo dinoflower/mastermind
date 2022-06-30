@@ -3,9 +3,8 @@ class Game
   CODE_PIECES = %w[W U B R G C].freeze
 
   def initialize(human, computer)
-    puts 'Do you want to break or make the code?'
-    @human = human.new(self, gets.chomp.downcase)
-    @computer = computer.new(self)
+    @human = human
+    @computer = computer
     @codemaker = @human.player_type == 'codemaker' ? @human : @computer
     @codebreaker = @human.player_type == 'codebreaker' ? @human : @computer
     @turn = 1

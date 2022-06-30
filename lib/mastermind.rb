@@ -29,7 +29,8 @@ class Game
   def start_game
     puts 'The colors are W, U, B, R, G, and C.'
     puts '■ indicates a correct guess. ▤ indicates a color in the wrong place.'
-    puts 'Make your guess: □□□□'
+    opener = @codebreaker == @human ? 'Make your guess: □□□□' : 'Write your code: □□□□'
+    puts opener
   end
 
   def check_guess

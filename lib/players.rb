@@ -24,7 +24,7 @@ class HumanPlayer < Player
   end
 
   def set_code
-    @code = gets.chomp.match./[bcgrw]/i
+    @code = gets.chomp.match(/[bcgrw]/i) # currently returns matchdata
     return unless @code < 4
 
     prompt_user
@@ -33,8 +33,8 @@ class HumanPlayer < Player
   def prompt_user
     puts 'Your code must be 4 characters long and can only include W, U, B, R, G, and C.'
     until @code.length == 4
-      entries = gets.chomp.match./[bcgrw]/i
-      entries.each { |entry| @code << entry if @code.length < 4 } # you know what I mean
+      entries = gets.chomp.match(/[bcgrw]/i) # currently returns matchdata
+      entries.each { |entry| @code << entry if @code.length < 4 }
     end
   end
 
@@ -72,52 +72,3 @@ class ComputerPlayer < Player
     4.times { @code << Game::CODE_PIECES.sample }
   end
 end
-
-# codemaker module for human and computer classes
-# module HumanCodemaker
-  # def return_code
-    # set_code
-  # end
-# 
-  # def set_code
-    # @code = gets.chomp.match./[bcgrw]/i
-    # return unless @code < 4
-# 
-    # prompt_user
-  # end
-# 
-  # def prompt_user
-    # puts 'Your code must be 4 characters long and can only include W, U, B, R, G, and C.'
-    # until @code.length == 4
-      # entries = gets.chomp.match./[bcgrw]/i
-      # entries.each { |entry| @code << entry if @code.length < 4 } # you know what I mean
-    # end
-  # end
-# end
-# 
-# # computer codemaker
-# module ComputerCodemaker
-  # def return_code
-    # set_code
-  # end
-# 
-  # private
-# 
-  # def set_code
-    # 4.times { @code << Game::CODE_PIECES.sample }
-  # end
-# end
-# 
-# # human codebreaker
-# module HumanCodebreaker
-  # def guess_code
-    # @current_guess = gets.chomp.upcase!.chars
-  # end
-# end
-# 
-# # computer codebreaker
-# module ComputerCodebreaker
-  # def guess_code
-    # # does stuff with array
-  # end
-# end

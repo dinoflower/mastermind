@@ -24,8 +24,8 @@ class HumanPlayer < Player
   end
 
   def set_code
-    input = /([bcgrw]){4}/i.match(gets.chomp)
-    @code = input[0].upcase.chars
+    input = gets.chomp.upcase.scan(/[bcgruw]/i)
+    @code = input
     return unless @code.length < 4
 
     prompt_user
@@ -34,9 +34,8 @@ class HumanPlayer < Player
   def prompt_user
     puts 'Your code must be 4 characters long and can only include W, U, B, R, G, and C.'
     until @code.length == 4
-      entries = /([bcgrw]){4}/i.match(gets.chomp)
-      colors = entries[0].upcase.chars
-      colors.each { |color| @code << color if @code.length < 4 }
+      entries = gets.chomp.upcasescan(/[bcgruw]/i)
+      entries.each { |entry| @code << entry if @code.length < 4 }
     end
   end
 
@@ -62,9 +61,9 @@ class ComputerPlayer < Player
   end
 
   def guess_code
-    @current_guess = if @game.turn == 1
+    @current_guess = if @game.turn == 1 # currently not working here - have also tried @turn
                        %w[W W W W]
-                     elsif @game.turn > 1
+                     elsif @game.turn > 1 # may have problem with (self) as arg on init
                        review_output
                      end
   end

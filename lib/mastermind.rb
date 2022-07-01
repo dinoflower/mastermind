@@ -2,6 +2,8 @@
 class Game
   CODE_PIECES = %w[W U B R G C].freeze
 
+  attr_reader :turn, :output
+
   def initialize(human, computer)
     @human = human
     @computer = computer

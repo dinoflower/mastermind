@@ -24,8 +24,9 @@ class HumanPlayer < Player
   end
 
   def set_code
-    @code = gets.chomp.match(/[bcgrw]/i) # currently returns matchdata
-    return unless @code < 4
+    input = /([bcgrw]){4}/i.match(gets.chomp)
+    @code = input[0].upcase.chars
+    return unless @code.length < 4
 
     prompt_user
   end
@@ -33,8 +34,9 @@ class HumanPlayer < Player
   def prompt_user
     puts 'Your code must be 4 characters long and can only include W, U, B, R, G, and C.'
     until @code.length == 4
-      entries = gets.chomp.match(/[bcgrw]/i) # currently returns matchdata
-      entries.each { |entry| @code << entry if @code.length < 4 }
+      entries = /([bcgrw]){4}/i.match(gets.chomp)
+      colors = entries[0].upcase.chars
+      colors.each { |color| @code << color if @code.length < 4 }
     end
   end
 
@@ -48,6 +50,7 @@ class ComputerPlayer < Player
   def initialize(game)
     super(game)
     @player_type = player_type
+    @possible_colors = Game::CODE_PIECES
   end
 
   def self.player_type
@@ -59,7 +62,34 @@ class ComputerPlayer < Player
   end
 
   def guess_code
-    # does stuff with array
+    @current_guess = if @game.turn == 1
+                       %w[W W W W]
+                     elsif @game.turn > 1
+                       review_output
+                     end
+  end
+
+  def review_output
+    case @output
+    when %w[□ □ □ □]
+      @possible_colors -= @current_guess
+      4.times { temp << @possible_colors.sample }
+      temp
+    when %w[▤ ▤ ▤ ▤]
+      4.times { temp << @current_colors.sample(4) }
+      temp
+    else
+      attempt_break
+    end
+  end
+
+  def attempt_break
+    if @output.include?('■')
+      @current_guess.sample(@output.count('■')) +
+        @possible_colors.sample(@output.length - @output.count('■'))
+    else
+      @possible_colors.sample(4)
+    end
   end
 
   def return_code

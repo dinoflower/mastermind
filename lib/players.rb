@@ -1,5 +1,9 @@
 # frozen_string_literal: true
 
+require 'pry-byebug'
+
+require_relative 'mastermind'
+
 # instantiates a mastermind player
 class Player
   attr_reader :game, :code, :player_type
@@ -9,6 +13,7 @@ class Player
     @game = game
     @code = []
     @current_guess = ''
+    @turn = game.turn
   end
 end
 
@@ -34,7 +39,7 @@ class HumanPlayer < Player
   def prompt_user
     puts 'Your code must be 4 characters long and can only include W, U, B, R, G, and C.'
     until @code.length == 4
-      entries = gets.chomp.upcasescan(/[bcgruw]/i)
+      entries = gets.chomp.upcase.scan(/[bcgruw]/i)
       entries.each { |entry| @code << entry if @code.length < 4 }
     end
   end
@@ -66,28 +71,27 @@ class ComputerPlayer < Player
                      elsif @game.turn > 1 # may have problem with (self) as arg on init
                        review_output
                      end
+    p @current_guess.join
   end
 
   def review_output
-    case @output
+    case @game.output
     when %w[□ □ □ □]
       @possible_colors -= @current_guess
-      4.times { temp << @possible_colors.sample }
-      temp
+      Array.new(4) { @possible_colors.sample }
     when %w[▤ ▤ ▤ ▤]
-      4.times { temp << @current_colors.sample(4) }
-      temp
+      @current_guess.sample(4)
     else
       attempt_break
     end
   end
 
   def attempt_break
-    if @output.include?('■')
-      @current_guess.sample(@output.count('■')) +
-        @possible_colors.sample(@output.length - @output.count('■'))
+    if @game.output.include?('■')
+      @current_guess.sample(@game.output.count('■')) +
+        (Array.new(4 - @game.output.count('■')) { @possible_colors.sample })
     else
-      @possible_colors.sample(4)
+      Array.new(4) { @possible_colors.sample }
     end
   end
 
@@ -98,6 +102,6 @@ class ComputerPlayer < Player
   private
 
   def set_code
-    4.times { @code << Game::CODE_PIECES.sample }
+    4.times { @code << @possible_colors.sample }
   end
 end

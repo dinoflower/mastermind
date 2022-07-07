@@ -19,4 +19,4 @@ def decide_codebreaker
   end
 end
 
-Game.new(HumanPlayer.new(self, decide_codebreaker), ComputerPlayer.new(self)).play_game
+Game.new(HumanPlayer, ComputerPlayer).play_game

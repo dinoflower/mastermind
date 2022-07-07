@@ -1,12 +1,14 @@
+require_relative 'players'
+
 # class to generate one two-player game of mastermind
 class Game
   CODE_PIECES = %w[W U B R G C].freeze
 
   attr_reader :turn, :output
 
-  def initialize(human, computer)
-    @human = human
-    @computer = computer
+  def initialize(human_player, computer_player)
+    @human = human_player.new(self, decide_codebreaker)
+    @computer = computer_player.new(self)
     @codemaker = @human.player_type == 'codemaker' ? @human : @computer
     @codebreaker = @human.player_type == 'codebreaker' ? @human : @computer
     @turn = 1

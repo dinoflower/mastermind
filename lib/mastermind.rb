@@ -101,13 +101,3 @@ class Game
     @output << '▤'
   end
 end
-
-# subclasses or modules for Computer and Human
-# subclasses or modules for Codemaker and Codebreaker
-# code is permutation of 4 (duplicates allowed)
-# guess feedback in symbols? "blank" space: □ wrong position: ▤ correct guess: ■
-# code needs to be secret but accessible by the guessing methods
-# puts "■ ▤ □ ▤"
-
-# Codemaker likely compares the guesses to the code (not manually)
-# both can see the game
